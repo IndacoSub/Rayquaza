@@ -17,13 +17,13 @@ def calculate_md5(file_path):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
-def extract_patch(original_files_folder, modified_files_folder, out_xdelta_files_folder):
+def extract_patch(original_files_folder, modified_files_folder, out_xdelta_files_folder, use_installer):
     try:
         for modified_file in Path(modified_files_folder).rglob('*'):
             if modified_file.is_file():
                 relative_path = modified_file.relative_to(modified_files_folder)
                 original_file = Path(original_files_folder) / relative_path
-                out_xdelta_file = Path(out_xdelta_files_folder) / (relative_path.as_posix() + ".xdelta")
+                out_xdelta_file = Path(out_xdelta_files_folder) / (relative_path.as_posix() + ("_patch" if use_installer else "") + ".xdelta")
 
                 if original_file.exists():
                     original_md5 = calculate_md5(original_file)
@@ -84,7 +84,8 @@ def main():
     parser.add_argument('--mod', help="Modified files folder or target folder")
     parser.add_argument('--out', help="Output xdelta files folder")
     parser.add_argument('--xdelta', help="Xdelta files folder")
-    parser.add_argument('-a', action='store_true', help="Apply patch")
+    parser.add_argument('--a', action='store_true', help="Apply patch")
+    parser.add_argument('--installer', action='store_true', help="For V3UPSManager")
 
     args = parser.parse_args()
 
@@ -105,7 +106,7 @@ def main():
             print("Not enough args!")
             explain_usage()
             return 1
-        extract_patch(args.og, args.mod, args.out)
+        extract_patch(args.og, args.mod, args.out, args.installer)
 
 if __name__ == "__main__":
     main()
