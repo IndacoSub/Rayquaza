@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 import tempfile
 import hashlib
+import sys
 
 def explain_usage():
     print("EXTRACT: Rayquaza.py --og ORIGINAL_FILES_FOLDER --mod MODIFIED_FILES_FOLDER --out OUT_XDELTA_FILES_FOLDER")
@@ -109,4 +110,6 @@ def main():
         extract_patch(args.og, args.mod, args.out, args.installer)
 
 if __name__ == "__main__":
+    print(f"Arguments before parsing: {sys.argv}")
     main()
+
